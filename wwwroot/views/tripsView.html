@@ -1,0 +1,108 @@
+﻿<!--
+    <a ng-href="#/graph/{{trip.name}}" class="btn btn-sm btn-primary">Graph</a>
+    <div class="text-danger" ng-show="vm.errorMessage">{{ vm.errorMessage }}</div>
+    <wait-cursor display-when="vm.isBusy"></wait-cursor>
+    <table class="table table-responsive table-striped">
+        <tr ng-repeat="trip in vm.trips">
+            <td>{{ trip.name }}</td>
+            <td>{{ trip.dateCreated | date }}</td>
+            <td><a ng-href="#/editor/{{trip.name}}" class="btn btn-sm btn-primary">Map</a></td>
+        </tr>
+    </table>
+</div>-->
+
+<div class="col-md-6 col-md-offset-3">
+    <form novalidate name="newTripForm" ng-submit="vm.addTrip()">
+        <div class="form-group">
+            <label for="name">Trip Name</label>
+            <input class="form-control" type="text" id="name" name="name" ng-model="vm.newTrip.name" required ng-minlength="5" />
+            <span ng-show="newTripForm.name.$error.required" class="text-warning">Name is required</span>
+            <span ng-show="newTripForm.name.$error.minlength" class="text-warning">Name must be at least five characters</span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Add" class="btn btn-success btn-sm" ng-disabled="newTripForm.$invalid" />
+        </div>
+    </form>
+<tb-grid server-url="/api/trips/paged" page-size="20" server-save-url="/api/trips"
+         grid-name="trips"
+         server-save-method="POST">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <tb-grid-pager class="col-md-6"></tb-grid-pager>
+                <div class="col-md-3">
+                    <div class="btn-group btn-group-sm">
+                        <tb-print-button title="Trips" class="btn-group">
+                        </tb-print-button>
+                        <tb-export-button filename="trips.csv" class="btn-group">
+                        </tb-export-button>
+                    </div>
+                </div>
+                <tb-text-search class="col-md-3" css="input-sm" placeholder="search..."></tb-text-search>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default panel-rounded">
+                        <tb-grid-table class="table-bordered table-hover table-striped responsive-mobile">
+                            <tb-column-definitions>
+                                <tb-column name="Order" column-type="numeric" sortable="true"
+                                           is-key="true" searchable="false" class="column-md"
+                                           sort-direction="Ascending" sort-order="1" visible="true">
+                                    <tb-column-filter></tb-column-filter>
+                                    <tb-column-header>{{label}}</tb-column-header>
+                                </tb-column>
+                                <tb-column name="Name" column-type="string" sortable="true"
+                                           searchable="true"
+                                           sort-direction="" sort-order="0" visible="true">
+                                    <tb-column-filter></tb-column-filter>
+                                    <tb-column-header>{{label}}</tb-column-header>
+                                </tb-column>
+                                <tb-column name="Arrival" column-type="datetimeutc" sortable="true"
+                                           sort-direction="" sort-order="0" visible="true">
+                                    <tb-column-filter></tb-column-filter>
+                                    <tb-column-header>{{label}}</tb-column-header>
+                                </tb-column>
+                                <!--<tb-column name="Departure" column-type="datetimeutc" sortable="true"
+                                           sort-direction="" sort-order="0" visible="true">
+                                    <tb-column-date-time-filter></tb-column-date-time-filter>
+                                    <tb-column-header>{{label}}</tb-column-header>
+                                </tb-column> -->
+                            </tb-column-definitions>
+                            <tb-row-set>
+                                <tb-row-template ng-show="$parent.$component.isEmpty">
+                                    <tb-cell-template class="text-center" colspan="{{$component.visibleColumns()}}">
+                                        <b>No data</b>
+                                    </tb-cell-template>
+                                </tb-row-template>
+                                <tb-row-template ng-repeat="trip in vm.trips" row-model="row" selectable="false">
+                                    <tb-cell-template column-name="Order" class="text-center cell-menu">
+                                        <div class="btn-group">
+                                            <a class="btn btn-default btn-xs"
+                                                {{trip.Order}}
+                                            </a>
+                                            <tb-remove-button model="row">
+                                            </tb-remove-button>
+                                        </div>
+                                    </tb-cell-template>
+                                    <tb-cell-template column-name="Name">
+                                        {{trip.Name}}
+                                    </tb-cell-template>
+                                    <tb-cell-template column-name="Arrival">
+                                        {{row.Date | date}}
+                                    </tb-cell-template>
+                                </tb-row-template>
+                            </tb-row-set>
+                        </tb-grid-table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <tb-grid-pager class="col-md-6 col-xs-12"></tb-grid-pager>
+                <tb-page-size-selector class="col-md-3 col-xs-6" selectorcss="input-sm">
+                </tb-page-size-selector>
+                <tb-grid-pager-info class="col-md-3 col-xs-6"></tb-grid-pager-info>
+            </div>
+        </div>
+    </div>
+</tb-grid>
+</div>

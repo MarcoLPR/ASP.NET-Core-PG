@@ -1,0 +1,8 @@
+﻿{
+  "MailSettings": {
+    "ToAddress": "marcolpr98@gmail.com"
+  },
+  "ConnectionStrings": {
+    "TravelContextConnection": "Server=(localdb)\\MSSQLLocalDB;Database=TravelsDB;Trusted_Connection=true;"
+  }
+}

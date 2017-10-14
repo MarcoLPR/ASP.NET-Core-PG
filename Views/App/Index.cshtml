@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <h3>Welcome Back, @User.Identity.Name</h3>
+            <a asp-controller="App" asp-action="Database" class="btn btn-lg btn-success">Database</a>
+        }
+    </div>
+</div>
