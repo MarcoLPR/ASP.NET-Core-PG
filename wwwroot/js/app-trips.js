@@ -2,8 +2,11 @@
 
     "use-strict";
 
-    angular.module("app-trips", ["simpleControls", "ngRoute", "tubular"])
-        .config($routeProvider => {
+    var app = angular.module("app-trips", ["simpleControls", "ngRoute", "tubular", "ui.bootstrap"]);
+        app.run(function (tubularConfig) {
+            tubularConfig.webApi.requireAuthentication(false);
+        });;
+        app.config($routeProvider => {
 
             $routeProvider
                 .when("/", {

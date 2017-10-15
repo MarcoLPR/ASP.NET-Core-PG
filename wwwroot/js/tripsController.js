@@ -17,17 +17,15 @@
 
         vm.isBusy = true;
 
-        /*$http.get("/api/trips")
+        $http.get("/api/trips")
             .then(response => {
-                //Success
                 angular.copy(response.data, vm.trips);
             }, error => {
-                //Failure
                 vm.errorMessage = "Failed to load data: " + error;
             })
             .finally(() => {
                 vm.isBusy = false;
-            });*/
+            });
 
         vm.addTrip = function () {
 

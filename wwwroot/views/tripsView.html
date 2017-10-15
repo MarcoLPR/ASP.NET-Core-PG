@@ -11,7 +11,7 @@
     </table>
 </div>-->
 
-<div class="col-md-6 col-md-offset-3">
+<div class="col-md-3">
     <form novalidate name="newTripForm" ng-submit="vm.addTrip()">
         <div class="form-group">
             <label for="name">Trip Name</label>
@@ -23,9 +23,11 @@
             <input type="submit" value="Add" class="btn btn-success btn-sm" ng-disabled="newTripForm.$invalid" />
         </div>
     </form>
-<tb-grid server-url="/api/trips/paged" page-size="20" server-save-url="/api/trips"
+</div>
+<div class="col-md-9">
+<tb-grid server-url="/api/trips/paged" request-method="POST" page-size="20"
          grid-name="trips"
-         server-save-method="POST">
+         require-authentication="false">
     <div class="row">
         <div class="col-md-12">
             <div class="row">
@@ -45,19 +47,18 @@
                     <div class="panel panel-default panel-rounded">
                         <tb-grid-table class="table-bordered table-hover table-striped responsive-mobile">
                             <tb-column-definitions>
-                                <tb-column name="Order" column-type="numeric" sortable="true"
-                                           is-key="true" searchable="false" class="column-md"
-                                           sort-direction="Ascending" sort-order="1" visible="true">
-                                    <tb-column-filter></tb-column-filter>
-                                    <tb-column-header>{{label}}</tb-column-header>
-                                </tb-column>
                                 <tb-column name="Name" column-type="string" sortable="true"
                                            searchable="true"
                                            sort-direction="" sort-order="0" visible="true">
                                     <tb-column-filter></tb-column-filter>
                                     <tb-column-header>{{label}}</tb-column-header>
                                 </tb-column>
-                                <tb-column name="Arrival" column-type="datetimeutc" sortable="true"
+                                <tb-column name="Created on" column-type="datetimeutc" sortable="true"
+                                           sort-direction="" sort-order="0" visible="true">
+                                    <tb-column-filter></tb-column-filter>
+                                    <tb-column-header>{{label}}</tb-column-header>
+                                </tb-column>
+                                <tb-column name="Actions" column-type="" sortable="false"
                                            sort-direction="" sort-order="0" visible="true">
                                     <tb-column-filter></tb-column-filter>
                                     <tb-column-header>{{label}}</tb-column-header>
@@ -74,21 +75,17 @@
                                         <b>No data</b>
                                     </tb-cell-template>
                                 </tb-row-template>
-                                <tb-row-template ng-repeat="trip in vm.trips" row-model="row" selectable="false">
-                                    <tb-cell-template column-name="Order" class="text-center cell-menu">
-                                        <div class="btn-group">
-                                            <a class="btn btn-default btn-xs"
-                                                {{trip.Order}}
-                                            </a>
-                                            <tb-remove-button model="row">
-                                            </tb-remove-button>
-                                        </div>
-                                    </tb-cell-template>
+                                <tb-row-template ng-repeat="row in vm.trips" row-model="row" selectable="false">
+                 <!--I made this work by not getting the data from the POST request at the beginning of the table,
+                     instead, I used the viewmodel-->
                                     <tb-cell-template column-name="Name">
-                                        {{trip.Name}}
+                                        {{row.name}}
                                     </tb-cell-template>
-                                    <tb-cell-template column-name="Arrival">
-                                        {{row.Date | date}}
+                                    <tb-cell-template column-name="Created">
+                                        {{row.dateCreated | date}}
+                                    </tb-cell-template>
+                                    <tb-cell-template column-name="Actions">
+                                        <a ng-href="#!/editor/{{row.name}}" class="btn btn-sm btn-primary">Map</a>
                                     </tb-cell-template>
                                 </tb-row-template>
                             </tb-row-set>

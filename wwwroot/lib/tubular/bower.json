@@ -1,0 +1,43 @@
+{
+  "name": "tubular",
+  "version": "1.7.9",
+  "description": "A set of AngularJS directives and designed to rapidly build modern web applications.",
+  "homepage": "http://unosquare.github.io/tubular",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unosquare/tubular"
+  },
+  "keywords": [
+    "grid",
+    "forms",
+    "bootstrap",
+    "angularjs"
+  ],
+  "main": [
+    "dist/tubular-bundle.js",
+    "dist/tubular-bundle.css"
+  ],
+  "ignore": [
+    "**/.*",
+    "packages/",
+    "src/**/*",
+    "LICENSE",
+    "package.json",
+    "README.md"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "angular": "^1.6.4",
+    "angular-bootstrap": "^2.5.0",
+    "awesome-bootstrap-checkbox": "^0.3.7",
+    "moment": "^2.17.1"
+  },
+  "devDependencies":{
+    "angular-route": "^1.6.4",
+    "angular-mocks": "^1.6.4",
+    "angular-loader": "^1.6.4"
+  },
+  "resolutions": {
+    "angular": "^1.6.4"
+  }
+}

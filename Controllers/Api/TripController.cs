@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Authorization;
 using Unosquare.Tubular;
 using Unosquare.Tubular.ObjectModel;
 
-
 namespace ASP.NET_Core_PG.Controllers.Api
 {
     [Route("api/trips")]
@@ -18,14 +17,16 @@ namespace ASP.NET_Core_PG.Controllers.Api
     {
         private ITravelRepository _repository;
         private ILogger<TripController> _logger;
+        private TravelContext _context;
 
-        public TripController(ITravelRepository repository, ILogger<TripController> logger)
+        public TripController(ITravelRepository repository, ILogger<TripController> logger, TravelContext context)
         {
+            _context = context;
             _repository = repository;
             _logger = logger;
         }
 
-        /*[HttpGet("")]
+        [HttpGet("")]
         public IActionResult Get()
         {
             try
@@ -40,15 +41,15 @@ namespace ASP.NET_Core_PG.Controllers.Api
 
                 return BadRequest("Bad Get Request");
             }
-        }*/
-
-        [HttpPost, Route("paged")]
-        public IActionResult GetGridData([FromBody] GridDataRequest request)
-        {
-            return Ok(request.CreateGridDataResponse(_repository.GetAllTrips()));
         }
 
-        [HttpPost]
+        [HttpPost("paged")]
+        public IActionResult GridData([FromBody] GridDataRequest request)
+        {
+            return Ok(request.CreateGridDataResponse(_context.Trips));
+        }
+
+        [HttpPost("")]
         public async Task<IActionResult> Post([FromBody]TripViewModel theTrip)
         {
             if (ModelState.IsValid)
