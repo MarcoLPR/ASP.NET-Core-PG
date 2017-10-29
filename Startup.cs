@@ -99,7 +99,7 @@ namespace ASP.NET_Core_PG
             })
             .AddJsonOptions(config =>
             {
-                config.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                config.SerializerSettings.ContractResolver = new DefaultContractResolver();
             });
         }
 

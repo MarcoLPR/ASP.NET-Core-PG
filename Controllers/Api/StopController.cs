@@ -7,21 +7,23 @@ using ASP.NET_Core_PG.Models;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
 using ASP.NET_Core_PG.Services;
+using Unosquare.Tubular.ObjectModel;
+using Unosquare.Tubular;
 
 namespace ASP.NET_Core_PG.Controllers.Api
 {
-    [Route("/api/trips/{tripName}/stops")]
+    [Route("api/trips/{tripName}/stops")]
     public class StopController : Controller
     {
+        private TravelContext _context;
         private ITravelRepository _repository;
         private ILogger<StopController> _logger;
-        private GeoCoordsService _coordsService;
 
-        public StopController(ITravelRepository repository, ILogger<StopController> logger, GeoCoordsService coordsService)
+        public StopController(ITravelRepository repository, ILogger<StopController> logger, TravelContext context)
         {
+            _context = context;
             _repository = repository;
             _logger = logger;
-            _coordsService = coordsService;
         }
 
         [HttpGet("")]
@@ -38,6 +40,12 @@ namespace ASP.NET_Core_PG.Controllers.Api
             }
 
             return BadRequest("Failed to get stops");
+        }
+
+        [HttpPost("paged")]
+        public IActionResult GridData([FromBody] GridDataRequest request)
+        {
+            return Ok(request.CreateGridDataResponse(_context.Stops));
         }
 
         [HttpPost("")]
@@ -62,6 +70,23 @@ namespace ASP.NET_Core_PG.Controllers.Api
                 _logger.LogError("Failed to save new Stop: {0}", ex);
             }
             return BadRequest("Failed to save new stop");
+        }
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var stop = _repository.GetStopById(id);
+            if (stop == null)
+            {
+                return NotFound();
+            }
+            _repository.DeleteStop(stop);
+
+            if (await _repository.SaveChangesAsync())
+            {
+                return Ok("Stop Deleted");
+            }
+
+            return BadRequest("Failed to Delete Stop");
         }
     }
 }

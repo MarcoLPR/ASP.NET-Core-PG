@@ -7,8 +7,8 @@
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/lib/bootswatch/darkly/bootstrap.min.css"/>
-        <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css"/>
+        <link rel="stylesheet" href="~/lib/bootswatch/darkly/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
         <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/angular-toastr@2.1.1/dist/angular-toastr.min.css" />
         <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/tubular@latest/dist/tubular-bundle.min.css">
         <link rel="stylesheet" href="~/css/site.css" />
@@ -37,19 +37,31 @@
                     <li><a asp-area="" asp-controller="App" asp-action="Index">Home</a></li>
                     @if (User.Identity.IsAuthenticated)
                     {
-                    <li><a asp-area="" asp-controller="App" asp-action="Database">Trips</a></li>
+                        <li><a asp-area="" asp-controller="App" asp-action="Database">Trips</a></li>
                     }
-                    <li><a asp-area="" asp-controller="App" asp-action="Contact">Contact</a></li>
                 </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    @if (!User.Identity.IsAuthenticated)
-                    {
-                    <li><a asp-area="" asp-controller="Auth" asp-action="Login">Login</a></li>
-                    }
-                    else
-                    {
-                    <li><a asp-area="" asp-controller="Auth" asp-action="Logout">Logout</a></li>
-                    }
+                <ul class="nav navbar-right navbar-nav">
+                    <li class="pull-right ">
+                    <li class="dropdown">
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a asp-area="" asp-controller="App" asp-action="Contact">Contact Support</a></li>
+                                <li class="divider"></li>
+                                <li><a asp-area="" asp-controller="Auth" asp-action="Login">Login</a></li>
+                            </ul>
+                        }
+                        else
+                        {
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, @User.Identity.Name <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/user/preferences"><i class="icon-cog"></i> Preferences</a></li>
+                                    <li><a asp-area="" asp-controller="App" asp-action="Contact">Contact Support</a></li>
+                                    <li class="divider"></li>
+                                    <li><a asp-area="" asp-controller="Auth" asp-action="Logout">Logout</a></li>
+                                </ul>
+                        }
                 </ul>
             </div>
         </div>
@@ -58,7 +70,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <div class="navbar navbar-inverse navbar-fixed-bottom">
+            <div class="navbar navbar-inverse navbar-fixed-bottom" style="margin-bottom:-20px">
                 <div class="col-md-6 col-md-offset-5">
                     <h4 class="">&copy; 2017 - MarcoLPR</h4>
                 </div>

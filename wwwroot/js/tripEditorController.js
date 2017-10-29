@@ -2,7 +2,7 @@
 
     "use strict";
 
-    angular.module("app-trips")
+    angular.module("app")
         .controller("tripEditorController", tripEditorController);
 
     function tripEditorController($routeParams, $http) {
@@ -34,8 +34,12 @@
            $http.get(googleUrl)
                .then(response => {
                    var json = response.data;
-                   vm.newStop.lat = json.results[0].geometry.location.lat;
-                   vm.newStop.long = json.results[0].geometry.location.lng;
+                   if (json.results[0].geometry.location.lat == undefined || json.results[0].geometry.location.lng == undefined) {
+                       vm.errorMessage = "City not found";
+                   } else {
+                       vm.newStop.lat = json.results[0].geometry.location.lat;
+                       vm.newStop.long = json.results[0].geometry.location.lng;
+                   }
                }).finally(() => {
                    $http.post(url, vm.newStop)
                        .then(response => {
@@ -50,6 +54,21 @@
                        })});
 
        };
+       vm.deleteStop = function (url) {
+           vm.isBusy = true;
+           vm.errorMessage = "";
+
+           $http.delete(url, vm.stops)
+               .then(response => {
+                   vm.stops.delete(response.data);
+                   _showMap(vm.stops);
+               }, error => {
+                   vm.errorMessage = "Failed to delete trip";
+               })
+               .finally(() => {
+                   vm.isBusy = false;
+               });
+       };
     }
     function _showMap(stops) {
 
@@ -57,9 +76,9 @@
 
             var mapStops = _.map(stops, function (item) {
                 return {
-                    lat: item.lat,
-                    long: item.long,
-                    info: item.name
+                    lat: item.Lat,
+                    long: item.Long,
+                    info: item.Name
                 };
             })
 

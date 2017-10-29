@@ -66,6 +66,23 @@ namespace ASP.NET_Core_PG.Controllers.Api
             return BadRequest("Failed to Save Changes");
         }
 
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var trip = _repository.GetTripById(id);
+            if(trip == null)
+            {
+                return NotFound();
+            }
+            _repository.DeleteTrip(trip);
+
+            if(await _repository.SaveChangesAsync())
+            {
+                return Ok("Trip Deleted");
+            }
+
+            return BadRequest("Failed to Delete Trip");
+        }
         /*[HttpPut]
         public IActionResult PutData([FromBody] GridDataUpdateRow<TripViewModel> theTrip)
         {
@@ -79,30 +96,7 @@ namespace ASP.NET_Core_PG.Controllers.Api
             item.Date = model.New.Date;
 
             return Ok();
-        }
-
-        [HttpGet, Route("select/{id}")]
-        public IActionResult Get(int id)
-        {
-            var item = _repository.GetData().FirstOrDefault(x => x.Id == id);
-
-            if (item == null)
-                return NotFound();
-
-            return Ok(item);
-        }
-
-        [HttpDelete, Route("{id}")]
-        public IActionResult Delete(int id)
-        {
-            var item = _repository.GetData().FirstOrDefault(x => x.Id == id);
-
-            if (item == null)
-                return NotFound();
-
-            _repository.RemoveItem(item);
-
-            return Ok();
         }*/
+
     }
 }

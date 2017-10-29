@@ -20,6 +20,7 @@ namespace ASP.NET_Core_PG.Models
 
         public DbSet<Trip> Trips { get; set; }
         public DbSet<Stop> Stops { get; set; }
+        public DbSet<PGUser> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

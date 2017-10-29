@@ -18,20 +18,16 @@ namespace ASP.NET_Core_PG.Models
             _logger = logger;
         }
 
-        public void AddStop(string tripName, Stop newStop)
+        public PGUser GetUserByName(string userName)
         {
-            var trip = GetTripByName(tripName);
-
-            if(trip != null)
-            {
-                trip.Stops.Add(newStop);
-                _context.Stops.Add(newStop);
-            }
+            return _context.Users
+                    .Where(x => x.UserName == userName)
+                    .FirstOrDefault();
         }
 
-        public void AddTrip(Trip trip)
+        public void AddUser(PGUser user)
         {
-            _context.Add(trip);
+            _context.Add(user);
         }
 
         public IQueryable<Trip> GetAllTrips()
@@ -47,6 +43,48 @@ namespace ASP.NET_Core_PG.Models
                 .Include(t => t.Stops)
                 .Where(t => t.Name == tripName)
                 .FirstOrDefault();
+        }
+
+        public Trip GetTripById(int id)
+        {
+            return _context.Trips
+                .Where(x => x.Id == id)
+                .FirstOrDefault();
+        }
+
+        public void AddTrip(Trip trip)
+        {
+            _context.Add(trip);
+        }
+
+        public void DeleteTrip(Trip trip)
+        {
+            _context.Remove(trip);
+        }
+
+        public Stop GetStopById(int id)
+        {
+            return _context.Stops
+                .Where(x => x.Id == id)
+                .FirstOrDefault();
+        }
+
+        public void AddStop(string tripName, Stop newStop)
+        {
+            var trip = GetTripByName(tripName);
+
+            if(trip != null)
+            {
+                trip.Stops.Add(newStop);
+                _context.Stops.Add(newStop);
+            }
+        }
+        
+        public void DeleteStop(Stop stop)
+        {
+            { 
+                _context.Remove(stop);
+            }
         }
 
         public async Task<bool> SaveChangesAsync()

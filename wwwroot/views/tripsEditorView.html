@@ -9,7 +9,7 @@
         <form novalidate name="newStopForm" ng-submit="vm.addStop()">
             <div class="form-group">
                 <label>Date</label>
-                <input class="form-control" id="arrival" name="arrival" ng-model="vm.newStop.arrival" required ng-pattern="/^(\d{2})\/(\d{2})\/(\d{4})$/" />
+                <input class="form-control" id="arrival" name="arrival" ng-model="vm.newStop.arrival" type="date" />
                 <span class="text-danger" ng-show="newStopForm.arrival.$error.required">Required</span>
                 <span class="text-danger" ng-show="newStopForm.arrival.$error.pattern">Must be on format of MM/DD/YYYY</span>
 
@@ -23,18 +23,81 @@
             </div>
             <div><input type="submit" value="Add" class="btn btn-success" ng-disabled="newStopForm.$invalid" /></div>
         </form>
-        <table class="table table-responsive table-striped">
-            <tr>
-                <th>Location</th>
-                <th>Arrival</th>
-            </tr>
-            <tr ng-repeat="stop in vm.stops">
-                <td>{{ stop.name }}</td>
-                <td>{{ stop.arrival | date }}</td>
-            </tr>
-        </table>
     </div>
     <div class="col-md-8">
+        <tb-grid server-url="/api/trips/{tripName}/stops/paged" server-delete-url="/api/trips/{tripName}/stops/delete" request-method="POST" page-size="20"
+                 grid-name="trips"
+                 require-authentication="false">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <tb-grid-pager class="col-md-6"></tb-grid-pager>
+                        <div class="col-md-3">
+                            <div class="btn-group btn-group-sm">
+                                <tb-print-button title="Trips" class="btn-group">
+                                </tb-print-button>
+                                <tb-export-button filename="trips.csv" class="btn-group">
+                                </tb-export-button>
+                            </div>
+                        </div>
+                        <tb-text-search class="col-md-3" css="input-sm" placeholder="search..."></tb-text-search>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default panel-rounded">
+                                <tb-grid-table class="table-bordered table-hover table-striped responsive-mobile">
+                                    <tb-column-definitions>
+                                        <tb-column name="Name" column-type="string" sortable="true"
+                                                   searchable="true"
+                                                   sort-direction="" sort-order="0" visible="true">
+                                            <tb-column-filter></tb-column-filter>
+                                            <tb-column-header>{{label}}</tb-column-header>
+                                        </tb-column>
+                                        <tb-column name="Arrival" column-type="datetimeutc" sortable="true"
+                                                   sort-direction="" sort-order="0" visible="true">
+                                            <tb-column-filter></tb-column-filter>
+                                            <tb-column-header>{{label}}</tb-column-header>
+                                        </tb-column>
+                                        <tb-column name="Id" label="Action" column-type="" sortable="false"
+                                                   sort-direction="" sort-order="0" visible="true" is-key="true">
+                                            <tb-column-filter></tb-column-filter>
+                                            <tb-column-header>{{label}}</tb-column-header>
+                                        </tb-column>
+                                    </tb-column-definitions>
+                                    <tb-row-set>
+                                        <tb-row-template ng-show="$parent.$component.isEmpty">
+                                            <tb-cell-template class="text-center" colspan="{{$component.visibleColumns()}}">
+                                                <b>No data</b>
+                                            </tb-cell-template>
+                                        </tb-row-template>
+                                        <tb-row-template ng-repeat="row in $component.rows"
+                                                         row-model="row">
+                                            <tb-cell-template column-name="Name">
+                                                {{row.Name}}
+                                            </tb-cell-template>
+                                            <tb-cell-template column-name="DateCreated">
+                                                {{row.Arrival | moment}}
+                                            </tb-cell-template>
+                                            <tb-cell-template column-name="Id">
+                                                <tb-remove-button model="row"></tb-remove-button>
+                                            </tb-cell-template>
+                                        </tb-row-template>
+                                    </tb-row-set>
+                                </tb-grid-table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <tb-grid-pager class="col-md-6 col-xs-12"></tb-grid-pager>
+                        <tb-page-size-selector class="col-md-3 col-xs-6" selectorcss="input-sm">
+                        </tb-page-size-selector>
+                        <tb-grid-pager-info class="col-md-3 col-xs-6"></tb-grid-pager-info>
+                    </div>
+                </div>
+            </div>
+        </tb-grid>
+    </div>
+    <div class="col-md-12">
         <div id="map" style="height:600px"></div>
     </div>
 </div>

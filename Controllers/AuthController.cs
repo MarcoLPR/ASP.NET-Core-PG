@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using ASP.NET_Core_PG.Models;
 
@@ -11,10 +12,14 @@ namespace ASP.NET_Core_PG.Controllers
     public class AuthController : Controller
     {
         private SignInManager<PGUser> _signInManager;
+        private TravelContext _context;
+        private ITravelRepository _repository;
 
-        public AuthController(SignInManager<PGUser> signInManager)
+        public AuthController(SignInManager<PGUser> signInManager, TravelContext context, ITravelRepository repository)
         {
             _signInManager = signInManager;
+            _context = context;
+            _repository = repository;
         }
 
         public IActionResult Login()
@@ -63,6 +68,23 @@ namespace ASP.NET_Core_PG.Controllers
             }
 
             return RedirectToAction("Index", "App");
+        }
+
+        [HttpPost("")]
+        public async Task<IActionResult> Register([FromBody]LoginViewModel requestedUser)
+        {
+            if (ModelState.IsValid)
+            {
+                var newUser = Mapper.Map<PGUser>(requestedUser);
+                _repository.AddUser(newUser);
+
+                if (await _repository.SaveChangesAsync())
+                {
+                    return Created($"{requestedUser.Username}", Mapper.Map<LoginViewModel>(newUser));
+                }
+            }
+
+            return BadRequest("Failed to Save User");
         }
     }
 }
